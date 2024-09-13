@@ -14,6 +14,53 @@ def header():
     separador()
     print("\t","-" * 65)
     
+# Função verifica marca e modelo
+def verifica_marca_modelo():
+    marca = input("\tDigite a marca do seu carro: ").lower()
+    if marca not in BD_MARCA_MODELOS.keys():
+        print("\t\nMarca não encontrada.")
+        return "","",False
+    modelo = input(f"\tDigite o modelo do seu carro: ").lower()
+    lista_modelos = BD_MARCA_MODELOS[marca]
+    if modelo not in lista_modelos:
+        print("\t\nModelo não encontrado.")
+        return "","", False
+    
+    return marca, modelo, True
+
+# Função para definir o problema e o codigo
+def tipo_problema_(marca, modelo,id):
+    while True:
+        tipo = input("\nEscolha 0 - Nenhum dos problemas | 1 - Poblema Motor | 2 - Problema Transmissão | 3 - Falha Elétrica | 4 - Problemas freios: ")
+        match tipo:
+            case '0':
+                print("\n\t Ok até a proxima!")
+                return "", ""
+            case '1':
+                foto(20)
+                print("\n\t Certo!Segundo a foto tirada o problema é de superaquecimento do carro,\n\t pode ser um problema sério, pois pode danificar o motor e outros \n\tcomponentes importantes do veículo...")
+                problema = "Poblema Motor"
+                return agendamento(problema,marca,modelo, id)
+            case '2':
+                foto(20)
+                print("\n\t Certo!Segundo a foto tirada o problema é de dificuldade de troca de marcha,\n\t será necessário uma troca dos sincronizadores desgastados...")
+                problema = "Problema Transmissão"
+                return agendamento(problema,marca, modelo, id)
+                
+            case '3':
+                foto(20)
+                print("\n\t Certo!Segundo a foto tirada o problema é da bateria do carro\n\t será necesserio troca...")
+                problema = "Falha Elétrica"
+                return agendamento(problema,marca, modelo, id)
+
+            case '4':
+                foto(20)
+                print("\n\t Certo!Segundo a foto tirada o problema está no desgaste das pastilhas,\n\t será necesserio troca...")
+                problema = "Problemas freios"
+                return agendamento(problema,marca, modelo, id)
+            case _:
+                print("Escolha entre 1, 2, 3 ou 4")
+    
 # Função para Duvidas
 def duvidas() -> int:
      while True:
@@ -149,7 +196,7 @@ def atualizar_dados(usuario) -> int:
             return 6, status
         
         else:
-            print(f" # Informações: \n -Nome: {usuario[0]["nome"]}\n -User Name: {usuario[0]["user_name"]} \n -RG: {usuario[0]["RG"]} \n -CPF: {usuario[0]["CPF"]} \n -Data de nascimento: {usuario[0]["Data_Nasc"]} \n -Email: {usuario[0]["email"]} \n -Telefone: {usuario[0]["telefone"]} \n -Endereço: {usuario[0]["adress"]} \n -Senha: {usuario[0]["senha"]}")
+            print(f" # Informações: \n -Nome: {usuario[0]["nome"]}\n -User Name: {usuario[0]["user_name"]} \n -RG: {usuario[0]["RG"]} \n -CPF: {usuario[0]["CPF"]} \n -Data de nascimento: {usuario[0]["Data_Nasc"]} \n -Email: {usuario[0]["email"]} \n -Telefone: {usuario[0]["telefone"]} \n -Endereço: {usuario[0]["adress"]} \n -Senha: {usuario[0]["senha"]} \n -Voltar")
             opcao = input("Qual informação gostaria de mudar?:").lower()
             
             match opcao:
@@ -220,6 +267,13 @@ def atualizar_dados(usuario) -> int:
                     atualizar_BD_USUARIOS("senha", aux)
                     status = False
                     
+                case "voltar":
+                    continuar = input("\nVocê gostaria de sair?  [S/n]:")
+                    print("\n")
+                    if continuar.lower() != "s":
+                        continue
+                    else:
+                        return 6, status
                     
                 case _:
                     print("\n")
@@ -227,9 +281,34 @@ def atualizar_dados(usuario) -> int:
                     print("Escolha uma das opções de cadastro.")
                     continue   
         
-        continuar = input("\nVocê gostaria de sair?  [S/n]:")
+        continuar = input("\nVocê gostaria de sair? [S/n]:")
         print("\n")
         if continuar.lower() != "s":
             continue
         else:
             return 6, status
+        
+# Função para mudar data de agendamento
+def mudar_data(carros, carros_agendados):
+    while True:
+        confirm_data = input("\n\tGostaria de mudar a data? [S/n]:")
+        if confirm_data.lower() != "s":
+            return carros["1"]
+        else:
+            n_agendamento = input("\n\tInforme o numero do agendamento que deseja mudar a data:")
+            carro_escolhido = carros[n_agendamento]
+            index = carros_agendados.index(carro_escolhido)
+            for data in DATAS:
+                if data != carro_escolhido["data"]:
+                    print(f"\n\tData disponivel para agendamento (n - [{DATAS.index(data)}]): ", data)
+            data_nova = input("\n\tInforme o numero da nova data ou digite 3 para manter a data anterio: ")
+            if data_nova == 3:
+                return carros_agendados
+            elif data_nova == 1 or 2:
+                carro_escolhido["data"] = DATAS[data_nova]
+                carro_data_antiga = carros_agendados[index]
+                carros_agendados.remove(carro_data_antiga)  
+                carros_agendados.insert(index, carro_escolhido)
+                return carros_agendados
+            else:
+                print("Opção invalida!informe(0, 1 ou 2)")

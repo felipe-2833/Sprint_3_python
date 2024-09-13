@@ -1,5 +1,35 @@
 from settings import *
 from datetime import datetime 
+import random
+
+# Função para desenhar um quadrado com o tamanho especificado, para utilizar como foto
+def foto(SIZE):
+    print("\n\tTire uma foto do problema do carro")
+    for i in range(10):
+        print("\t\t\t\t\t\t\t\t",'*' * SIZE)
+    print("\n\tObrigado!")
+    
+# Função para agendar e forncer o codigo de agendamento
+def agendamento(tipo_problema, marca, modelo,id):
+    while True:
+        inf = input("\n\t Gostaria de agendar com nossos mecanicos?[S/n]:").lower()
+        if inf == "s":
+            print("\n\tOK foi agendado!")
+            print("\tAgora vá/ou retorne a pagina de agendamento para mais informações.")
+            return {"data": str(escolhe_data_aleatoria()), "marca": marca, "modelo": modelo, "problema": tipo_problema,"mecanica": escolhe_oficina_aleatoria(), "id":id}
+        elif inf == "n":
+            print("\tOK, até a proxima!")
+            return{}
+        else:
+            print("\tDigite S/n.")
+            
+# Função gera oficina aleatoria
+def escolhe_oficina_aleatoria():
+    return random.choice(OFICINAS_MECANICAS)
+
+# Função gera oficina aleatoria
+def escolhe_data_aleatoria():
+    return random.choice(DATAS)
 
 #Função que imprime faz a verificação de ação do usuario pós tirar uma duvida 
 def perguntar_saida_pag_duvidas() -> int:
