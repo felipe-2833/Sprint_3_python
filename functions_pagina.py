@@ -1,4 +1,5 @@
 from functions import *
+from settings import *
 
 # Função separador
 def separador():
@@ -48,15 +49,15 @@ def login() -> int| bool| str:
         
         if login_valido:
             print("Login realizado com sucesso!")
-            return 0, True, user_name
+            return 0, True, user_name, busca_matche_usuario("user_name", user_name)
         else:
             print("Usuario não encontrado")
             continuar = input("\nTentar novamente? [S/n]: ")
             print("\n")
             if continuar.lower() != "s":
-                return 0, False, ""
+                return 0, False, "", []
             else:
-                return 2, False, ""
+                return 5, False, "", []
             
 #Função que permite o usuario se cadastrar e adicionar suas informações na bd
 def cadastro() -> int:
@@ -123,17 +124,14 @@ def cadastro() -> int:
                 continue
             
 #Função que imprime na tela as informações completas de cadastro, retorna o numero da pagina
-def info_cadastro() -> int:
+def info_cadastro(usuario) -> int:
     while True:
-        name_cadastro = input("Informe seu User name: ")
-        cadastro = busca_matche_usuario("user_name", name_cadastro)
-        
-        if cadastro == []:
+        if usuario == []:
             print("\nUsuario não encontrado!")
             return 6
         
         else:
-            print(f" # Informações: \n -Nome: {cadastro[0]["nome"]}\n -User Name: {cadastro[0]["user_name"]} \n -RG: {cadastro[0]["RG"]} \n -CPF: {cadastro[0]["CPF"]} \n -Data de nascimento: {cadastro[0]["Data_Nasc"]} \n -Email: {cadastro[0]["email"]} \n -Telefone: {cadastro[0]["telefone"]} \n -Endereço: {cadastro[0]["adress"]} \n -Senha: {cadastro[0]["senha"]}")
+            print(f" # Informações: \n -Nome: {usuario[0]["nome"]}\n -User Name: {usuario[0]["user_name"]} \n -RG: {usuario[0]["RG"]} \n -CPF: {usuario[0]["CPF"]} \n -Data de nascimento: {usuario[0]["Data_Nasc"]} \n -Email: {usuario[0]["email"]} \n -Telefone: {usuario[0]["telefone"]} \n -Endereço: {usuario[0]["adress"]} \n -Senha: {usuario[0]["senha"]}")
             
         continuar = input("\nVocê gostaria de sair?  [S/n]:")
         print("\n")
@@ -143,27 +141,25 @@ def info_cadastro() -> int:
             return 6
         
 #Função que imprime na tela as informações completas de cadastro e possibilita modificação, retorna o numero da pagina
-def atualizar_dados() -> int:
+def atualizar_dados(usuario) -> int:
+    status = True
     while True:
-        name_cadastro = input("Informe seu User name: ")
-        cadastro = busca_matche_usuario("user_name", name_cadastro)
-        
-        if cadastro == []:
+        if usuario == []:
             print("\nUsuario não encontrado!")
-            return 6
+            return 6, status
         
         else:
-            print(f" # Informações: \n -Nome: {cadastro[0]["nome"]}\n -User Name: {cadastro[0]["user_name"]} \n -RG: {cadastro[0]["RG"]} \n -CPF: {cadastro[0]["CPF"]} \n -Data de nascimento: {cadastro[0]["Data_Nasc"]} \n -Email: {cadastro[0]["email"]} \n -Telefone: {cadastro[0]["telefone"]} \n -Endereço: {cadastro[0]["adress"]} \n -Senha: {cadastro[0]["senha"]}")
+            print(f" # Informações: \n -Nome: {usuario[0]["nome"]}\n -User Name: {usuario[0]["user_name"]} \n -RG: {usuario[0]["RG"]} \n -CPF: {usuario[0]["CPF"]} \n -Data de nascimento: {usuario[0]["Data_Nasc"]} \n -Email: {usuario[0]["email"]} \n -Telefone: {usuario[0]["telefone"]} \n -Endereço: {usuario[0]["adress"]} \n -Senha: {usuario[0]["senha"]}")
             opcao = input("Qual informação gostaria de mudar?:").lower()
             
             match opcao:
                 case "nome":
                     aux = input("Digite um novo nome:")
-                    atualizar_BD_USUARIOS("nome", name_cadastro, aux)
+                    atualizar_BD_USUARIOS("nome", aux)
                     
                 case "user name":
-                    aux = input("Digite um novo nome:")
-                    atualizar_BD_USUARIOS("user_name", name_cadastro, aux)
+                    aux = input("Digite um novo user name:")
+                    atualizar_BD_USUARIOS("user_name", aux)
                     
                 case "rg":
                     rg1 = input("Digite um novo rg:")
@@ -173,7 +169,7 @@ def atualizar_dados() -> int:
                     else:
                         print("RG invalido!, (somente numeros)")
                         continue
-                    atualizar_BD_USUARIOS("RG", name_cadastro, aux)
+                    atualizar_BD_USUARIOS("RG", aux)
                     
                 case "cpf":
                     cpf1 = input("Digite um novo cpf:")
@@ -183,7 +179,7 @@ def atualizar_dados() -> int:
                     else:
                         print("CPF invalido!, (somente numeros)")
                         continue
-                    atualizar_BD_USUARIOS("CPF", name_cadastro, aux)
+                    atualizar_BD_USUARIOS("CPF", aux)
                 
                 case "data de nascimento":
                     data_nascimento1 = input("Digite uma nova data de nascimento:")
@@ -193,7 +189,7 @@ def atualizar_dados() -> int:
                     else:
                         print("Data invalida!")
                         continue
-                    atualizar_BD_USUARIOS("Data_Nasc", name_cadastro, aux)
+                    atualizar_BD_USUARIOS("Data_Nasc", aux)
                     
                 case "email":
                     email = input("Digite um novo E-mail:")
@@ -203,7 +199,7 @@ def atualizar_dados() -> int:
                     else:
                         print("Email invalido!")
                         continue
-                    atualizar_BD_USUARIOS("email", name_cadastro, aux)
+                    atualizar_BD_USUARIOS("email", aux)
                     
                 case "telefone":
                     telefone1 = input("Digite um novo telefone:")
@@ -213,16 +209,17 @@ def atualizar_dados() -> int:
                     else:
                         print("Telefone invalido!, (somente numeros)")
                         continue
-                    atualizar_BD_USUARIOS("telefone", name_cadastro, aux)
+                    atualizar_BD_USUARIOS("telefone", aux)
                     
                 case "endereço":
                     aux = input("Digite um novo endereço:")
-                    atualizar_BD_USUARIOS("adress", name_cadastro, aux)
+                    atualizar_BD_USUARIOS("adress", aux)
                     
                 case "senha":
-                    aux = input("Digite uma nova senha (será necessario realizar login novamente):")
-                    atualizar_BD_USUARIOS("senha", name_cadastro, aux)
-                    LOGIN_OK = False
+                    aux = input("Digite uma nova senha (AVISO!:será necessario realizar login novamente):")
+                    atualizar_BD_USUARIOS("senha", aux)
+                    status = False
+                    
                     
                 case _:
                     print("\n")
@@ -235,4 +232,4 @@ def atualizar_dados() -> int:
         if continuar.lower() != "s":
             continue
         else:
-            return 6
+            return 6, status

@@ -47,7 +47,7 @@ while PAGINA == 0:
                header()
                print("\t\t\t LOGIN")
                print("\n")
-               PAGINA, LOGIN_OK , USER_NAME = login()
+               PAGINA, LOGIN_OK , USER_NAME, USUARIO_LOGADO = login()
                
         #CADASTRO
         case "6":
@@ -67,11 +67,19 @@ while PAGINA == 0:
                     #Permite o usuario ver suas informações de cadastro
                     case "2":
                         print("\n")
-                        PAGINA = info_cadastro()
+                        if LOGIN_OK:
+                            PAGINA = info_cadastro(USUARIO_LOGADO)
+                        else:
+                            print("\nNecessario fazer Login!")
+                            PAGINA = 6
                     #Permite o usuario modificar suas informações de cadastro
                     case "3":
                         print("\n")
-                        PAGINA = atualizar_dados()
+                        if LOGIN_OK:
+                            PAGINA,LOGIN_OK = atualizar_dados(USUARIO_LOGADO)
+                        else:
+                            print("\nNecessario fazer Login!")
+                            PAGINA = 6
                     #sair da pagina
                     case "4":
                         PAGINA = 0

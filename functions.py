@@ -20,9 +20,8 @@ def busca(chave: int, valor: str | int) -> dict:
     
 def busca_login(nome_usuario: str, senha: str | int) -> bool:
     for user in BD_USUARIOS:
-        for key,value in user.items():
-            if user["user_name"] == nome_usuario and user["senha"] == senha:
-                return True
+        if user["user_name"] == nome_usuario and user["senha"] == senha:
+            return True
     return False
 
 #Função que verifica se a algum valor compativel com alguma tupla no bd usuarios, retorna uma lista com a tupla encontrada
@@ -85,8 +84,7 @@ def verifica_usuario(user_name:str) -> bool:
     return len(result) > 0 and len(result["user_name"]) > 0
 
 #Função que atualiza o bd usuarios, apagando a antiga tupla e add uma nova com novas informções    
-def atualizar_BD_USUARIOS(key: str, nome_cadastrado: str, aux:str | int | datetime) -> None:
+def atualizar_BD_USUARIOS(key: str, aux:str | int | datetime) -> None:
     for user in BD_USUARIOS:
-        if user["user_name"] == nome_cadastrado:
-            user[key] = aux
-            print("\nModificação realizada com sucesso!")
+        user[key] = aux
+        print("\nModificação realizada com sucesso!")

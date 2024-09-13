@@ -8,6 +8,8 @@ DUVIDAS =  {"1":"Como agendar um serviço?: ",
             "4":"Como posso visualizar ou gerenciar meus agendamentos futuros?: "
         }
 
+USUARIO_LOGADO = []
+
 #Banco de Dados
 BD_USUARIOS = [
     {"user_id":"1", "nome":"felipe", "user_name":"felipe", "RG":"x", "CPF":"x", "Data_Nasc":"x", "email":"x", "telefone":"x", "adress":"x", "senha":"1234"}
