@@ -1,5 +1,7 @@
 #Variaveis Globais
 PAGINA = 0
+LOGIN_OK = False
+USER_NAME = ""
 DUVIDAS =  {"1":"Como agendar um serviço?: ", 
             "2":"Quais são as políticas de cancelamento e reembolso?: ", 
             "3":"Como faço para alterar ou cancelar um agendamento existente?: ", 
