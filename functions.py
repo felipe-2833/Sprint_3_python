@@ -26,7 +26,7 @@ def busca_login(nome_usuario: str, senha: str | int) -> bool:
     return False
 
 #Função que verifica se a algum valor compativel com alguma tupla no bd usuarios, retorna uma lista com a tupla encontrada
-def busca_matche_usuario(chave: int, valor: str | int) -> list[tuple]:
+def busca_matche_usuario(chave: int, valor: str | int) -> list[dict]:
     result = []
     for user in BD_USUARIOS:
         if user[chave] == valor:
@@ -83,3 +83,10 @@ def id_usuario() -> str:
 def verifica_usuario(user_name:str) -> bool:
     result = busca("user_name", user_name)
     return len(result) > 0 and len(result["user_name"]) > 0
+
+#Função que atualiza o bd usuarios, apagando a antiga tupla e add uma nova com novas informções    
+def atualizar_BD_USUARIOS(key: str, nome_cadastrado: str, aux:str | int | datetime) -> None:
+    for user in BD_USUARIOS:
+        if user["user_name"] == nome_cadastrado:
+            user[key] = aux
+            print("\nModificação realizada com sucesso!")
