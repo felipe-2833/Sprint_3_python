@@ -1,3 +1,7 @@
+ANDRÉ GERALDI MARCOLONGO - 1TDSPV - RM555285
+FELIPE LEVY STEPHENS FIDELIX - 1TDSPG - RM556426
+SAMIR HAGE NETO - 1TDSPG - RM557260
+
 Sprint 3: Preparação dos dados para IA
 A partir dos dados coletados nas outras disciplinas, a equipe deverá desenvolver um programa em Python, o 
 qual deverá contemplar os seguintes itens:

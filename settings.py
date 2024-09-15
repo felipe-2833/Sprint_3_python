@@ -1,3 +1,4 @@
+#Imports de libs
 import pandas as pd
 from datetime import date, timedelta
 
@@ -7,7 +8,7 @@ LOGIN_OK = False
 USER_NAME = ""
 SIZE = 20
 
-#Listas Globais
+#Listas Globais:
 DATAS = [(date.today() + timedelta(days=3)).strftime("%d/%m/%y"), (date.today() + timedelta(days=17)).strftime("%d/%m/%y"), (date.today() + timedelta(days=24)).strftime("%d/%m/%y")]
 OFICINAS_MECANICAS = [
     "Auto Mecânica Silva",
@@ -22,7 +23,7 @@ OFICINAS_MECANICAS = [
     "Mecânica Qualicar"
 ]
 
-#Listas de dicionarios globais
+#Listas de dicionarios globais:
 USUARIO_LOGADO = []
 DUVIDAS =  {"1":"Como agendar um serviço?: ", 
             "2":"Quais são as políticas de cancelamento e reembolso?: ", 

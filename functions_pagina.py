@@ -15,7 +15,7 @@ def header():
     print("\t","-" * 65)
     
 # Função verifica marca e modelo
-def verifica_marca_modelo():
+def verifica_marca_modelo() -> str | str | bool:
     marca = input("\tDigite a marca do seu carro: ").lower()
     if marca not in BD_MARCA_MODELOS.keys():
         print("\t\nMarca não encontrada.")
@@ -28,14 +28,14 @@ def verifica_marca_modelo():
     
     return marca, modelo, True
 
-# Função para definir o problema e o codigo
-def tipo_problema_(marca, modelo,id):
+# Função para definir o tipo de problema e gerar um possivel agendamento com as informações do carro.
+def tipo_problema_(marca:str, modelo:str,id:str) -> dict:
     while True:
         tipo = input("\nEscolha 0 - Nenhum dos problemas | 1 - Poblema Motor | 2 - Problema Transmissão | 3 - Falha Elétrica | 4 - Problemas freios: ")
         match tipo:
             case '0':
                 print("\n\t Ok até a proxima!")
-                return "", ""
+                return {"id":None}
             case '1':
                 foto(20)
                 print("\n\t Certo!Segundo a foto tirada o problema é de superaquecimento do carro,\n\t pode ser um problema sério, pois pode danificar o motor e outros \n\tcomponentes importantes do veículo...")
@@ -60,6 +60,53 @@ def tipo_problema_(marca, modelo,id):
                 return agendamento(problema,marca, modelo, id)
             case _:
                 print("Escolha entre 1, 2, 3 ou 4")
+
+# Função para mudar data de agendamento
+def mudar_data(carros:list[dict], carros_agendados:list[dict]) -> list[dict]:
+    while True:
+        confirm_data = input("\n\tGostaria de mudar a data? [S/n]:")
+        if confirm_data.lower() != "s":
+            return carros_agendados
+        else:
+            n_agendamento = input("\n\tInforme o numero do agendamento que deseja mudar a data:")
+            carro_escolhido = carros[n_agendamento]
+            index = carros_agendados.index(carro_escolhido)
+            for data in DATAS:
+                if data != carro_escolhido["data"]:
+                    print(f"\n\tData disponivel para agendamento (n - {DATAS.index(data)}): ", data)
+            data_nova = input("\n\tInforme o numero da nova data ou digite 3 para manter a data anterio: ")
+            if data_nova == 3:
+                return carros_agendados
+            elif data_nova == 0 or 1 or 2:
+                carro_escolhido["data"] = DATAS[int(data_nova)]
+                carro_data_antiga = carros_agendados[index]
+                carros_agendados.remove(carro_data_antiga)  
+                carros_agendados.insert(index, carro_escolhido)
+                return carros_agendados
+            else:
+                print("Opção invalida!informe(0, 1 ou 2)")
+                
+# Função para cancelar agendamento
+def cancelar_agendamento(carros:list[dict], carros_agendados:list[dict]) -> list[dict]:
+    while True:
+        confirm = input("\tGostaria de cancelar seu agendamento?[S/n]:")
+        if confirm.lower() == "n":
+            print("OK, até!")
+            return carros_agendados
+        elif confirm.lower() == "s":
+            try:
+                n_agendamento = input("\n\tInforme o numero do agendamento que deseja cancelar:")
+                carro_escolhido = carros[n_agendamento]
+                for carro in carros_agendados:
+                    if carro == carro_escolhido:
+                        carros_agendados.remove(carro)
+                        print("\tCancelamento realizado com sucesso!")
+                return carros_agendados
+            except KeyError:
+                print("Você não digitou um numero de agendamento valido!")
+                continue
+        else:
+            print("Opção invalida!informar: [S/n]")
     
 # Função para Duvidas
 def duvidas() -> int:
@@ -85,7 +132,7 @@ def duvidas() -> int:
             case _:
                 continue
             
-#Função que verifica no bd o login e senha, retorna o numero da pagina, a validação para acessar a area de explorar e o user_name que está sendo usado no momento.
+#Função que verifica no bd o login e senha, retorna o numero da pagina, a validação para acessar a area de explorar e o usuario que foi logado.
 def login() -> int| bool| str:
     print("Login de usuário:")
     while True:
@@ -110,8 +157,18 @@ def login() -> int| bool| str:
 def cadastro() -> int:
     print("Cadastre seu usuário:")
     while True:
-        nome = input("\nNome Completo: ")
-        user_name = input("User Name: ")
+        nome1 = input("\nNome Completo: ")
+        nome_valido = validar_nome(nome1)
+        if nome_valido:
+            nome = nome1
+        else:
+            continue
+        user_name1 = input("User Name: ")
+        use_valido = validar_nome(user_name1)
+        if use_valido:
+            user_name = user_name1
+        else:
+            continue
         rg1 = input("RG: ")
         rg_valido = validar_rg(rg1)
         if rg_valido:
@@ -171,7 +228,7 @@ def cadastro() -> int:
                 continue
             
 #Função que imprime na tela as informações completas de cadastro, retorna o numero da pagina
-def info_cadastro(usuario) -> int:
+def info_cadastro(usuario:list[dict]) -> int:
     while True:
         if usuario == []:
             print("\nUsuario não encontrado!")
@@ -187,8 +244,8 @@ def info_cadastro(usuario) -> int:
         else:
             return 6
         
-#Função que imprime na tela as informações completas de cadastro e possibilita modificação, retorna o numero da pagina
-def atualizar_dados(usuario) -> int:
+#Função que imprime na tela as informações completas de cadastro e possibilita modificação, retorna o numero da pagina e o status do usuario(logado ou não)
+def atualizar_dados(usuario:list[dict]) -> int |bool:
     status = True
     while True:
         if usuario == []:
@@ -201,11 +258,21 @@ def atualizar_dados(usuario) -> int:
             
             match opcao:
                 case "nome":
-                    aux = input("Digite um novo nome:")
+                    nome = input("Digite um novo nome:")
+                    nome_valido = validar_nome(nome)
+                    if nome_valido:
+                        aux = nome
+                    else:
+                        continue
                     atualizar_BD_USUARIOS("nome", aux)
                     
                 case "user name":
-                    aux = input("Digite um novo user name:")
+                    user_name = input("Digite um novo user name:")
+                    nome_valido = validar_nome(user_name)
+                    if nome_valido:
+                        aux = user_name
+                    else:
+                        continue
                     atualizar_BD_USUARIOS("user_name", aux)
                     
                 case "rg":
@@ -268,12 +335,7 @@ def atualizar_dados(usuario) -> int:
                     status = False
                     
                 case "voltar":
-                    continuar = input("\nVocê gostaria de sair?  [S/n]:")
-                    print("\n")
-                    if continuar.lower() != "s":
-                        continue
-                    else:
-                        return 6, status
+                    return 6,status
                     
                 case _:
                     print("\n")
@@ -283,32 +345,6 @@ def atualizar_dados(usuario) -> int:
         
         continuar = input("\nVocê gostaria de sair? [S/n]:")
         print("\n")
-        if continuar.lower() != "s":
-            continue
-        else:
+        if continuar.lower() == "s":
             return 6, status
-        
-# Função para mudar data de agendamento
-def mudar_data(carros, carros_agendados):
-    while True:
-        confirm_data = input("\n\tGostaria de mudar a data? [S/n]:")
-        if confirm_data.lower() != "s":
-            return carros["1"]
-        else:
-            n_agendamento = input("\n\tInforme o numero do agendamento que deseja mudar a data:")
-            carro_escolhido = carros[n_agendamento]
-            index = carros_agendados.index(carro_escolhido)
-            for data in DATAS:
-                if data != carro_escolhido["data"]:
-                    print(f"\n\tData disponivel para agendamento (n - [{DATAS.index(data)}]): ", data)
-            data_nova = input("\n\tInforme o numero da nova data ou digite 3 para manter a data anterio: ")
-            if data_nova == 3:
-                return carros_agendados
-            elif data_nova == 1 or 2:
-                carro_escolhido["data"] = DATAS[data_nova]
-                carro_data_antiga = carros_agendados[index]
-                carros_agendados.remove(carro_data_antiga)  
-                carros_agendados.insert(index, carro_escolhido)
-                return carros_agendados
-            else:
-                print("Opção invalida!informe(0, 1 ou 2)")
+                

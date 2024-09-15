@@ -1,3 +1,6 @@
+# ANDRÉ GERALDI MARCOLONGO - 1TDSPV - RM555285
+# FELIPE LEVY STEPHENS FIDELIX - 1TDSPG - RM556426
+# SAMIR HAGE NETO - 1TDSPG - RM557260
 from settings import *
 from  functions_pagina import *
 from time import sleep
@@ -48,25 +51,30 @@ while PAGINA == 0:
                     if carro["id"] == id_cliente:
                         contador += 1
                         print(f"\n\tInformações do agendamento:\n\t\t -Numero Agendamento: {contador}\n\t\t -Data: {carro["data"]}\n\t\t -Marca do carro: {carro["marca"]}\n\t\t -Modelo do carro: {carro["modelo"]}\n\t\t -Problema: {carro["problema"]} \n\t\t -Mecânica: {carro["mecanica"]}\n")
-                        carros_cliente[contador] = carro
-                    else: 
-                        print("\n\tNão há agendamentos!Agende com nossos mecânicos na pagina MECANICO VIRTUAL.")
-                        PAGINA = 0
+                        carros_cliente[str(contador)] = carro
+                if contador == 0: 
+                    print("\n\tNão há agendamentos!Agende com nossos mecânicos na pagina MECANICO VIRTUAL. \n")
+                    PAGINA = 0
                 opcao = input("1 - MUDAR DATA | 2 - CANCELAR AGENDAMENTO | 3 - SAIR: ")
                 match opcao:
                     #Permite o usuario se cadastrar
                     case "1":
-                        print("\n")
-                        CARROS_AGENDADOS = mudar_data(carros_cliente,CARROS_AGENDADOS)
-                        PAGINA = 2
+                        if contador != 0: 
+                            print("\n")
+                            CARROS_AGENDADOS = mudar_data(carros_cliente,CARROS_AGENDADOS)6
+                            PAGINA = 2
+                        else:
+                            print("\n\tÉ necessario ter algum agendamento para realizar esta ação!")
+                            PAGINA = 2
                     #Permite o usuario ver suas informações de cadastro
                     case "2":
-                        print("\n")
-                        if LOGIN_OK:
-                            PAGINA = info_cadastro(USUARIO_LOGADO)
+                        if contador != 0: 
+                            print("\n")
+                            CARROS_AGENDADOS = cancelar_agendamento(carros_cliente,CARROS_AGENDADOS)
+                            PAGINA = 2
                         else:
-                            print("\nNecessario fazer Login!")
-                            PAGINA = 6
+                            print("\n\tÉ necessario ter algum agendamento para realizar esta ação!")
+                            PAGINA =2
                     #sair da pagina
                     case "3":
                         PAGINA = 0
@@ -142,8 +150,16 @@ while PAGINA == 0:
                         else:
                             print("\nNecessario fazer Login!")
                             PAGINA = 6
-                    #sair da pagina
+                    #Permite o usuario modificar suas informações de cadastro
                     case "3":
+                        print("\n")
+                        if LOGIN_OK:
+                            PAGINA,LOGIN_OK = atualizar_dados(USUARIO_LOGADO)
+                        else:
+                            print("\nNecessario fazer Login!")
+                            PAGINA = 6
+                    #sair da pagina
+                    case "4":
                         PAGINA = 0
                     #caso o usuario digite errado
                     case _:
